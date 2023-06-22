@@ -2,6 +2,8 @@ import { EditBookFormComponent } from "@/components/editBookForm";
 import { BreadcumbComponent } from "@/components/breadcumb";
 import { Metadata } from "next";
 import { headers } from "next/headers";
+import { GetBookResponse } from "@/types/getBookResponse";
+import { ApiResponse } from "@/types/apiResponse";
 
 type Props = {
   params: {
@@ -14,9 +16,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const host = headers().get("host");
 
-  const book = await fetch(`http://${host}/api/book/${id}`, {
+  const bookResponse = await fetch(`http://${host}/api/book/${id}`, {
     headers: headers(),
-  }).then((res) => res.json());
+  });
+
+  if (bookResponse.status === 404) {
+    return {
+      title: "Reading - Livro não encontrado",
+      description: "Sua estante de livros!",
+    } 
+  }
+
+  const book: ApiResponse<GetBookResponse> = await bookResponse.json();
+
+  if (!book.success) {
+    return {
+      title: "Reading - Algo deu errado",
+      description: "Sua estante de livros!",
+    } 
+  }
 
   return {
     title: `Reading - Editar ${book.payload.title}`,
@@ -26,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params: { id } }: Props) {
   const host = headers().get("host");
-  const book = await fetch(`http://${host}/api/book/${id}`, {
+  const book: ApiResponse<GetBookResponse> = await fetch(`http://${host}/api/book/${id}`, {
     headers: headers(),
     next: {
       tags: [`book.${id}`]

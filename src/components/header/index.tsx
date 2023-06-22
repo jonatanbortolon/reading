@@ -26,7 +26,7 @@ console.log(session);
         </nav>
         <div className="h-full flex py-3">
           {session ? (
-              <UserMenuComponent name={session.user.name as string} />
+              <UserMenuComponent name={session.user.name} />
             ) : (
               <LinkButtonComponent className="px-6" href="/entrar">Entre agora</LinkButtonComponent>
             )

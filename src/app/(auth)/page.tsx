@@ -1,5 +1,7 @@
 import { BookShowcaseComponent } from "@/components/bookShowcase";
 import { LinkButtonComponent } from "@/components/linkButton";
+import { ApiResponse } from "@/types/apiResponse";
+import { GetBooksResponse } from "@/types/getBooksResponse";
 import { headers } from "next/headers";
 
 export const metadata = {
@@ -9,7 +11,7 @@ export const metadata = {
 
 export default async function Page() {
   const host = headers().get("host");
-  const books = await fetch(`http://${host}/api/book`, {
+  const books: ApiResponse<GetBooksResponse> = await fetch(`http://${host}/api/book`, {
     headers: headers(),
     next: {
       tags: ["books"]
@@ -30,7 +32,7 @@ export default async function Page() {
         <ul className="w-full flex flex-col mt-7 gap-7">
             {books.success ? (
               books.payload.length > 0 ? (
-                (books.payload as Array<any>).map((book) => {
+                books.payload.map((book) => {
                   return (
                     <BookShowcaseComponent key={`book-${book.id}`} book={book}/>
                   )

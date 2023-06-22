@@ -21,9 +21,9 @@ type Props = {
     coverUrl: string;
     rating: number;
     pageCount: number;
-    review: string;
+    review?: string;
     startedAt: string;
-    finishedAt: string;
+    finishedAt?: string;
   };
 }
 
@@ -103,6 +103,7 @@ export function EditBookFormComponent({ initialValues }: Props) {
     defaultValues: async () => {
       const initialValuesClone = {
         ...structuredClone(initialValues),
+        review: initialValues.review ?? "",
         startedAt: new Date(initialValues.startedAt),
         finishedAt: initialValues.finishedAt ? new Date(initialValues.finishedAt) : null,
       };

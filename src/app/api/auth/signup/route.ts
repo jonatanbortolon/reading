@@ -29,6 +29,8 @@ export async function POST(req: Request) {
     const validation = schema.safeParse(body);
 
     if (!validation.success) {
+      console.log(validation.error);
+      
       return new NextResponse(
         JSON.stringify({
           success: false,
@@ -39,9 +41,10 @@ export async function POST(req: Request) {
         { status: 422 }
       );
     }
-
+    
     const { name, email, password } = validation.data;
-
+    
+    console.log({ name, email, password });
     const user = await prisma.user.findFirst({
       where: {
         email,
